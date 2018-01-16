@@ -93,13 +93,24 @@ public struct PDFDocument {
     
     /// Extracts image representations of each page in a background thread and stores them in the cache
     func loadPages() {
-        DispatchQueue.global(qos: .background).async {
+//        DispatchQueue.global(qos: .background).async {
+//            for pageNumber in 1...self.pageCount {
+//                self.imageFromPDFPage(at: pageNumber, callback: { backgroundImage in
+//                    guard let backgroundImage = backgroundImage else { return }
+//                    self.images.setObject(backgroundImage, forKey: NSNumber(value: pageNumber))
+//                })
+//            }
+//        }
+        DispatchQueue.main.async {
             for pageNumber in 1...self.pageCount {
-                self.imageFromPDFPage(at: pageNumber, callback: { backgroundImage in
-                    guard let backgroundImage = backgroundImage else { return }
-                    self.images.setObject(backgroundImage, forKey: NSNumber(value: pageNumber))
-                })
+                autoreleasepool {
+                    self.imageFromPDFPage(at: pageNumber, callback: { backgroundImage in
+                        guard let backgroundImage = backgroundImage else { return }
+                        self.images.setObject(backgroundImage, forKey: NSNumber(value: pageNumber))
+                    })
+                }
             }
+
         }
     }
     
